@@ -6,7 +6,38 @@ import java.io.ByteArrayOutputStream;
 
 public class LSB4 implements Algorithm{
     @Override
-    public BmpFile EmbedInformation(BmpFile carrier, byte[] data) {
+    public BmpFile EmbedInformation(BmpFile carrier, byte[] data) throws Exception {
+
+        if (data.length * 8 > carrier.Content.length * carrier.Header.BytesPerPixel()*4)
+            throw new Exception("Muy grande");
+
+        var dataInBits = new boolean[data.length * 8];
+
+        for (int i = 0; i < data.length; i++) {
+            System.arraycopy(BitOperations.ReadLastKBits(data[i],8),0,dataInBits,i * 8,8);
+        }
+
+        int i =0;
+        for (var pixel: carrier.Content){
+
+            for (int j = 3; j >=0; j--) {
+                if (i >= dataInBits.length)
+                    return carrier;
+                pixel.Blue = BitOperations.WriteBit(pixel.Blue,j,dataInBits[i++]);
+            }
+
+            for (int j = 3; j >=0; j--) {
+                if (i >= dataInBits.length)
+                    return carrier;
+                pixel.Green = BitOperations.WriteBit(pixel.Green,j,dataInBits[i++]);
+            }
+
+            for (int j = 3; j >=0; j--) {
+                if (i >= dataInBits.length)
+                    return carrier;
+                pixel.Red = BitOperations.WriteBit(pixel.Red,j,dataInBits[i++]);
+            }
+        }
 
         return carrier;
     }

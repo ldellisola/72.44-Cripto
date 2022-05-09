@@ -64,7 +64,7 @@ public class Main {
         var rawInformation = switch (args.SteganographyAlgorithm) {
             case LSB1 -> new LSB1().ExtractInformation(carrier);
             case LSB4 -> new LSB4().ExtractInformation(carrier);
-            case LSBI -> new byte[0];
+            case LSBI -> new LSBI().ExtractInformation(carrier);
         };
 
         if (args.UseEncryption())
