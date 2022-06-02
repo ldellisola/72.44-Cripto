@@ -3,46 +3,35 @@ package Encryption;
 import CommandLineArguments.Enums.ChainingModes;
 import CommandLineArguments.Enums.EncryptionPrimitives;
 
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
-public class Cipher {
+public class CipherProperties extends CipherAlgorithm {
     private final String encryptionPrimitive;
     private final int keySize;
     private final String chainingMode;
 
-    public Cipher(EncryptionPrimitives encryptionPrimitive, ChainingModes chainingMode) {
+    public CipherProperties(EncryptionPrimitives encryptionPrimitive, ChainingModes chainingMode) {
         this.encryptionPrimitive = encryptionPrimitive.toString();
         this.chainingMode = chainingMode.toString();
         this.keySize = encryptionPrimitive.KeyLength();
-
-    }
-    public byte[] Decrypt(byte[] data, String password) throws Exception {
-
-        var cipher = javax.crypto.Cipher.getInstance(encryptionPrimitive+"/"+chainingMode+"/PKCS5Padding");
-
-        var key = new SecretKeySpec(password.getBytes(),encryptionPrimitive);
-
-        cipher.init(javax.crypto.Cipher.DECRYPT_MODE,key);
-
-        SecretKeyFactory.getInstance("").generateSecret(null);
-
-        return cipher.doFinal(data);
     }
 
-    public byte[] Encrypt(byte[] data, String password) throws Exception {
+    @Override
+    String getName() {
+        return encryptionPrimitive;
+    }
 
-        var cipher = javax.crypto.Cipher.getInstance(encryptionPrimitive+"/"+chainingMode+"/PKCS5Padding");
+    @Override
+    int getKeyLength() {
+        return keySize;
+    }
 
-        var key = new SecretKeySpec(password.getBytes(),encryptionPrimitive);
+    public String chainingMode() {
+        return chainingMode;
+    }
 
-
-        cipher.init(javax.crypto.Cipher.DECRYPT_MODE,key);
-
-        return cipher.doFinal(data);
-
+    @Override
+    ChainingModes getChainingMode() {
+        return ChainingModes.valueOf(chainingMode.toUpperCase(Locale.ROOT));
     }
 }
