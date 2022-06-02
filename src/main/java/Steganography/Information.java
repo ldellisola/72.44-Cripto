@@ -17,7 +17,7 @@ public class Information {
     public final int Size;
     public final byte[] Data;
 
-    private Information(String extension, int size,  byte[] data){
+    private Information(String extension, int size, byte[] data) {
         Extension = extension;
         Size = size;
         Data = data;
@@ -40,7 +40,7 @@ public class Information {
         String ext = "." + FilenameUtils.getExtension(file.getName());
         byte[] data = Files.readAllBytes(file.toPath());
 
-        return new Information(ext,size,data);
+        return new Information(ext, size, data);
     }
 
     public static Information Load(byte[] data) throws IOException {
@@ -48,11 +48,11 @@ public class Information {
     }
 
     public static Information Load(ByteArrayInputStream stream) throws IOException {
-        int size =  ByteBuffer.wrap(stream.readNBytes(4)).getInt();
+        int size = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
         var data = stream.readNBytes(size);
         String ext = StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(stream.readNBytes(4))).toString();
 
-        return new Information(ext,size,data);
+        return new Information(ext, size, data);
     }
 
 

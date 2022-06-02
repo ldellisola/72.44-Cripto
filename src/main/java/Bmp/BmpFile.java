@@ -38,7 +38,6 @@ public class BmpFile {
     }
 
 
-
     public void Save(String filename) throws IOException {
         var file = new File(filename);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -49,6 +48,6 @@ public class BmpFile {
             stream.write(bmpPixel.ToByteArray());
         }
 
-        Files.write(file.toPath(),stream.toByteArray());
+        Files.write(file.toPath(), stream.toByteArray());
     }
 }

@@ -19,36 +19,33 @@ public class EmbedArguments {
 
 
     public EmbedArguments(CommandLine cmd) throws Exception {
-        this.InputFile =  new File(cmd.getOptionValue("in"));
+        this.InputFile = new File(cmd.getOptionValue("in"));
 
-        if(!this.InputFile.exists() || this.InputFile.isDirectory())
+        if (!this.InputFile.exists() || this.InputFile.isDirectory())
             throw new FileNotFoundException(cmd.getOptionValue("in"));
 
         this.CarrierFile = new File(cmd.getOptionValue("p"));
 
-        if(!this.CarrierFile.exists() || this.CarrierFile.isDirectory())
+        if (!this.CarrierFile.exists() || this.CarrierFile.isDirectory())
             throw new FileNotFoundException(cmd.getOptionValue("p"));
 
         this.OutputFile = cmd.getOptionValue("out");
 
         try {
             this.SteganographyAlgorithm = SteganographyAlgorithms.valueOf(cmd.getOptionValue("steg"));
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new Exception(cmd.getOptionValue("steg") + " is not a valid Steganography Algorithm");
         }
 
-        try{
-            this.EncryptionPrimitive = EncryptionPrimitives.valueOf(cmd.getOptionValue("a",EncryptionPrimitives.AES128.name()));
-        }
-        catch (IllegalArgumentException e){
+        try {
+            this.EncryptionPrimitive = EncryptionPrimitives.valueOf(cmd.getOptionValue("a", EncryptionPrimitives.AES128.name()));
+        } catch (IllegalArgumentException e) {
             throw new Exception(cmd.getOptionValue("a") + " is not a valid Encryption primitive");
         }
 
-        try{
-            this.ChainingMode = ChainingModes.valueOf(cmd.getOptionValue("m",ChainingModes.CBC.name()));
-        }
-        catch (IllegalArgumentException e){
+        try {
+            this.ChainingMode = ChainingModes.valueOf(cmd.getOptionValue("m", ChainingModes.CBC.name()));
+        } catch (IllegalArgumentException e) {
             throw new Exception(cmd.getOptionValue("m") + " is not a valid chaining mode");
         }
 
@@ -56,7 +53,7 @@ public class EmbedArguments {
     }
 
 
-    public Boolean UseEncyption(){
+    public Boolean UseEncyption() {
         return this.Password != null;
     }
 }

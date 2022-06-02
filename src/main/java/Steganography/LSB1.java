@@ -4,7 +4,7 @@ import Bmp.BmpFile;
 
 import java.io.ByteArrayOutputStream;
 
-public class LSB1 implements Algorithm{
+public class LSB1 implements Algorithm {
     @Override
     public BmpFile EmbedInformation(BmpFile carrier, byte[] data) throws Exception {
 
@@ -13,20 +13,20 @@ public class LSB1 implements Algorithm{
 
         var dataInBits = new boolean[data.length * 8];
         for (int i = 0; i < data.length; i++) {
-            System.arraycopy(BitOperations.ReadLastKBits(data[i],8),0,dataInBits,i * 8,8);
+            System.arraycopy(BitOperations.ReadLastKBits(data[i], 8), 0, dataInBits, i * 8, 8);
         }
 
-        int i =0;
-        for (var pixel: carrier.Content){
+        int i = 0;
+        for (var pixel : carrier.Content) {
             if (i >= dataInBits.length)
                 break;
-            pixel.Blue = BitOperations.WriteBit(pixel.Blue,0,dataInBits[i++]);
+            pixel.Blue = BitOperations.WriteBit(pixel.Blue, 0, dataInBits[i++]);
             if (i >= dataInBits.length)
                 break;
-            pixel.Green = BitOperations.WriteBit(pixel.Green,0,dataInBits[i++]);
+            pixel.Green = BitOperations.WriteBit(pixel.Green, 0, dataInBits[i++]);
             if (i >= dataInBits.length)
                 break;
-            pixel.Red = BitOperations.WriteBit(pixel.Red,0,dataInBits[i++]);
+            pixel.Red = BitOperations.WriteBit(pixel.Red, 0, dataInBits[i++]);
         }
 
         return carrier;
@@ -36,12 +36,12 @@ public class LSB1 implements Algorithm{
     public byte CurrentByte = 0;
     private final ByteArrayOutputStream Stream = new ByteArrayOutputStream();
 
-    public void WriteBit(boolean value){
+    public void WriteBit(boolean value) {
 
-        CurrentByte = BitOperations.WriteBit(CurrentByte,7-CurrentBit,value);
+        CurrentByte = BitOperations.WriteBit(CurrentByte, 7 - CurrentBit, value);
         CurrentBit = (CurrentBit + 1) % 8;
 
-        if (CurrentBit == 0){
+        if (CurrentBit == 0) {
             Stream.write(CurrentByte);
             CurrentByte = 0;
         }

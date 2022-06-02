@@ -2,7 +2,7 @@ package Steganography;
 
 import Bmp.BmpFile;
 
-public class LSBI implements Algorithm{
+public class LSBI implements Algorithm {
     @Override
     public BmpFile EmbedInformation(BmpFile carrier, byte[] data) {
         return carrier;

@@ -4,7 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 public class CommandLineOptions {
-    static public Options GetEmbedOptions(){
+    static public Options GetEmbedOptions() {
         return new Options()
                 .addRequiredOption("embed", "embed", false, "Indica que se va a ocultar información")
                 .addRequiredOption("in", "in", true, "Archivo que se va a ocultar")
@@ -17,7 +17,7 @@ public class CommandLineOptions {
     }
 
 
-    static public Options GetExtractOptions(){
+    static public Options GetExtractOptions() {
         return new Options()
                 .addRequiredOption("extract", "extract", false, "Indica que se va a extraer información")
                 .addRequiredOption("p", "p", true, "Archivo bmp portador")
