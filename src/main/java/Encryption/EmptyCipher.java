@@ -1,6 +1,6 @@
 package Encryption;
 
-public class EmptyCipher implements Cipher{
+public class EmptyCipher implements CipherProperties {
     @Override
     public byte[] Decrypt(byte[] data, String password) {
         return new byte[0];

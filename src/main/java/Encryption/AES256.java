@@ -1,8 +1,8 @@
 package Encryption;
 
-public class AES128 extends AES {
+public class AES256 extends AES {
     @Override
     int getKeyLength() {
-        return 128;
+        return 256;
     }
 }

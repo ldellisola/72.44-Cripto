@@ -1,6 +1,4 @@
 import Bmp.BmpFile;
-import Bmp.BmpPixel;
-import Bmp.InvalidBmpException;
 import CommandLineArguments.CommandLineOptions;
 import CommandLineArguments.EmbedArguments;
 import CommandLineArguments.ExtractArguments;
@@ -12,7 +10,6 @@ import Steganography.LSBI;
 import org.apache.commons.cli.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
