@@ -37,7 +37,7 @@ public enum ChainingModes {
     CFB {
         @Override
         public String toString() {
-            return "CFB8";
+            return "CFB";
         }
 
         @Override
