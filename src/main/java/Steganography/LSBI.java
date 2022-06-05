@@ -29,7 +29,7 @@ public class LSBI implements Algorithm {
 
     @Override
     public BmpFile EmbedInformation(BmpFile carrier, byte[] data) throws Exception {
-        if ((data.length + 4) * 8  > carrier.Content.length * carrier.Header.BytesPerPixel())
+        if ((data.length + 4) * 8  > carrier.ContentInBytes.length)
             throw new Exception("Muy grande");
 
         var dataInBits = new boolean[data.length * 8 ];
@@ -46,7 +46,7 @@ public class LSBI implements Algorithm {
             }
             else {
                 var isInverted = benefitMatrix[t][0] <= benefitMatrix[t][1];
-                carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.Content[t].Green, 0, isInverted);
+                carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[t], 0, isInverted);
                 t++;
             }
         }
@@ -84,10 +84,8 @@ public class LSBI implements Algorithm {
 //
 // (tamañoEnc|Enc(tamaño|contenido|extension|0))|matriz
 //        int size = carrier.ContentInBytes[];
-        for (var pixel : carrier.Content) {
-            WriteBit(BitOperations.ReadKBit(pixel.Blue, 0));
-            WriteBit(BitOperations.ReadKBit(pixel.Green, 0));
-            WriteBit(BitOperations.ReadKBit(pixel.Red, 0));
+        for (var _byte : carrier.ContentInBytes) {
+            WriteBit(BitOperations.ReadKBit(_byte, 0));
         }
 
         return Stream.toByteArray();

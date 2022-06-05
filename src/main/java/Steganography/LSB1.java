@@ -8,7 +8,7 @@ public class LSB1 implements Algorithm {
     @Override
     public BmpFile EmbedInformation(BmpFile carrier, byte[] data) throws Exception {
 
-        if (data.length * 8 > carrier.Content.length * carrier.Header.BytesPerPixel())
+        if (data.length * 8 > carrier.ContentInBytes.length)
             throw new Exception("Muy grande");
 
         var dataInBits = new boolean[data.length * 8];
@@ -16,18 +16,8 @@ public class LSB1 implements Algorithm {
             System.arraycopy(BitOperations.ReadLastKBits(data[i], 8), 0, dataInBits, i * 8, 8);
         }
 
-        int i = 0;
-        for (var pixel : carrier.Content) {
-            if (i >= dataInBits.length)
-                break;
-            pixel.Blue = BitOperations.WriteBit(pixel.Blue, 0, dataInBits[i++]);
-            if (i >= dataInBits.length)
-                break;
-            pixel.Green = BitOperations.WriteBit(pixel.Green, 0, dataInBits[i++]);
-            if (i >= dataInBits.length)
-                break;
-            pixel.Red = BitOperations.WriteBit(pixel.Red, 0, dataInBits[i++]);
-        }
+        for (int x = 0,i = 0; x < carrier.ContentInBytes.length && i < dataInBits.length; x++, i++)
+            carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[x],0,dataInBits[i]);
 
         return carrier;
     }
@@ -50,11 +40,8 @@ public class LSB1 implements Algorithm {
     @Override
     public byte[] ExtractInformation(BmpFile carrier) {
 
-        for (var pixel : carrier.Content) {
-            WriteBit(BitOperations.ReadKBit(pixel.Blue, 0));
-            WriteBit(BitOperations.ReadKBit(pixel.Green, 0));
-            WriteBit(BitOperations.ReadKBit(pixel.Red, 0));
-        }
+        for(var _byte: carrier.ContentInBytes)
+            WriteBit(BitOperations.ReadKBit(_byte,0));
 
         return Stream.toByteArray();
     }

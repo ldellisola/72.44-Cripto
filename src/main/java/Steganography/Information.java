@@ -51,7 +51,7 @@ public class Information {
         int size = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
         var data = stream.readNBytes(size);
         String ext = StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(stream.readNBytes(4))).toString();
-
+        
         return new Information(ext, size, data);
     }
 

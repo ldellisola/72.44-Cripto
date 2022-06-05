@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class BmpFile {
 
     public final BmpHeader Header;
-    public final BmpPixel[] Content;
+    private final BmpPixel[] Content;
     public final byte[] ContentInBytes;
 
     public BmpFile(String filename) throws Exception {
@@ -72,10 +72,8 @@ public class BmpFile {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         stream.write(Header.ToByteArray());
+        stream.write(ContentInBytes);
 
-        for (BmpPixel bmpPixel : Content) {
-            stream.write(bmpPixel.ToByteArray());
-        }
 
         Files.write(file.toPath(), stream.toByteArray());
     }
