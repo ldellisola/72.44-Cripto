@@ -8,6 +8,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -24,18 +27,22 @@ public abstract class CipherAlgorithm {
 
     abstract ChainingModes getChainingMode();
 
-    public byte[] Decrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+    public byte[] Decrypt(byte[] data, String password) throws Exception {
         return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
-    public byte[] Encrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        return transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
+    public byte[] Encrypt(byte[] data, String password) throws Exception{
+        var encryptedData =  transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
+
+        var stream = new ByteArrayOutputStream();
+
+        stream.write(ByteBuffer.allocate(4).putInt(encryptedData.length).array());
+        stream.write(encryptedData);
+
+        return stream.toByteArray();
     }
 
-    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode.toString() + "/" + mode.getPadding());
         // Para la generación de clave a partir de una password, asumir que la función de hash usada es sha256, y que no se usa SALT.
         MessageDigest md5 = MessageDigest.getInstance("SHA-256");
