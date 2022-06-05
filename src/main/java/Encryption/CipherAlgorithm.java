@@ -1,6 +1,7 @@
 package Encryption;
 
 import CommandLineArguments.Enums.ChainingModes;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -39,7 +40,7 @@ public abstract class CipherAlgorithm {
         return stream.toByteArray();
     }
 
-    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws Exception {
+    private byte[] transform(byte[] input, @NotNull ChainingModes mode, @NotNull String password, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode.toString() + "/" + mode.getPadding());
         // Para la generación de clave a partir de una password, asumir que la función de hash usada es sha256, y que no se usa SALT.
         MessageDigest md5 = MessageDigest.getInstance("SHA-256");
@@ -56,7 +57,7 @@ public abstract class CipherAlgorithm {
         return cipher.doFinal(input);
     }
 
-    // source: https://gist.github.com/luosong/5523434 y https://olabini.com/blog/tag/evp_bytestokey/
+    // source: https://gist.github.com/luosong/5523434 & https://olabini.com/blog/tag/evp_bytestokey/
     public static byte[][] EVP_BytesToKey(int key_len, int iv_len, MessageDigest md, byte[] data, int count) {
         byte[][] both = new byte[2][];
         byte[] key = new byte[key_len];
