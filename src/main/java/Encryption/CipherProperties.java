@@ -2,6 +2,7 @@ package Encryption;
 
 import CommandLineArguments.Enums.ChainingModes;
 import CommandLineArguments.Enums.EncryptionPrimitives;
+
 import java.util.Locale;
 
 public class CipherProperties extends CipherAlgorithm {
@@ -16,17 +17,13 @@ public class CipherProperties extends CipherAlgorithm {
     }
 
     @Override
-    String getName() {
+    String getPrimitive() {
         return encryptionPrimitive;
     }
 
     @Override
     int getKeyLength() {
         return keySize;
-    }
-
-    public String chainingMode() {
-        return chainingMode;
     }
 
     @Override

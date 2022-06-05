@@ -2,43 +2,56 @@ package Encryption;
 
 import CommandLineArguments.Enums.ChainingModes;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
 public abstract class CipherAlgorithm {
-    abstract String getName();
+    private final static int COUNT = 1;
+
+    abstract String getPrimitive();
 
     abstract int getKeyLength();
 
     abstract ChainingModes getChainingMode();
 
-    public byte[] Decrypt(byte[] data, String password) throws Exception {
+    public byte[] Decrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         return transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
     }
 
-    public byte[] Encrypt(byte[] data, String password) throws Exception {
+    public byte[] Encrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
-    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws Exception {
-        Cipher cipher = Cipher.getInstance(getName() + "/" + mode.toString() + "/" + mode.getPadding());
+    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode.toString() + "/" + mode.getPadding());
+        // Para la generación de clave a partir de una password, asumir que la función de hash usada es sha256, y que no se usa SALT.
         MessageDigest md5 = MessageDigest.getInstance("SHA-256");
 
-        final byte[][] keyAndIV = EVP_BytesToKey(getKeyLength() / Byte.SIZE, cipher.getBlockSize(), md5, password.getBytes(), 1);
-        SecretKeySpec key = new SecretKeySpec(keyAndIV[0], getName());
+        final byte[][] keyAndIV = EVP_BytesToKey(getKeyLength() / Byte.SIZE, cipher.getBlockSize(), md5, (password).getBytes(StandardCharsets.UTF_8), COUNT);
+        SecretKeySpec key = new SecretKeySpec(keyAndIV[0], getPrimitive());
 
         if (mode.usesIV()) {
-            IvParameterSpec iv = new IvParameterSpec(keyAndIV[1]);
-            cipher.init(cipherMode, key, iv);
+            cipher.init(cipherMode, key, new IvParameterSpec(keyAndIV[1]));
         } else {
             cipher.init(cipherMode, key);
         }
+
         return cipher.doFinal(input);
     }
 
-    // source: https://gist.github.com/luosong/5523434
+    // source: https://gist.github.com/luosong/5523434 y https://olabini.com/blog/tag/evp_bytestokey/
     public static byte[][] EVP_BytesToKey(int key_len, int iv_len, MessageDigest md, byte[] data, int count) {
         byte[][] both = new byte[2][];
         byte[] key = new byte[key_len];
