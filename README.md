@@ -11,11 +11,11 @@ Trabajo Práctico Especial para la materia 72.44 - Criptografía y Seguridad - P
 * [Pecile, Gian Luca](https://github.com/glpecile) - 59235
 
 ## Ejemplos de uso
-Esteganografiar el archivo de texto `mensaje1.txt` en el archivo portador `imagen1.bmp` obteniendo un archivo `test.bmp` mediante el algoritmo LSB Improved, con encripción DES en modo CBC con password “oculto”
+Esteganografiar el archivo de texto `mensaje1.txt` en el archivo portador `testOutput.bmp` obteniendo un archivo `test1.bmp` mediante el algoritmo LSB Improved, con encripción DES en modo CBC con password “oculto”
 ```sh
-$stegobmp -embed -in "mensaje1.txt" -p "test.bmp" -out "imagenmas1" -s "LSB1"
+$stegobmp -embed -in "mensaje1.txt" -p "test1.bmp" -out "testOutput" -s "LSB1" -a AES192 -m OFB -pass "oculto"
 ```
-Extraer el archivo de texto `mensaje1.txt` del archivo portador `imagenmas1.bmp` ocultado mediante el algoritmo LSB Improved, con encripción DES en modo CBC con password “oculto”
+Extraer el archivo de texto `mensaje1.txt` del archivo portador `testOutput.bmp` ocultado mediante el algoritmo LSB Improved, con encripción DES en modo CBC con password “oculto”
 ```sh
-$stegobmp -extract -p "imagenmas1.bmp" -out "mensaje1" -s "LSB1"
+$stegobmp -extract -p "testOutput.bmp" -out "mensaje1" -s "LSB1" -a AES192 -m OFB -pass "oculto"
 ```

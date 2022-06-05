@@ -1,21 +1,29 @@
 package Encryption;
 
+import CommandLineArguments.Enums.ChainingModes;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 
 public abstract class CipherAlgorithm {
-    public byte[] Decrypt(byte[] data, ChainingMode mode, String password) throws Exception {
-        return transform(data, mode, password, Cipher.ENCRYPT_MODE);
+    abstract String getName();
+
+    abstract int getKeyLength();
+
+    abstract ChainingModes getChainingMode();
+
+    public byte[] Decrypt(byte[] data, String password) throws Exception {
+        return transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
     }
 
-    public byte[] Encrypt(byte[] data, ChainingMode mode, String password) throws Exception {
-        return transform(data, mode, password, Cipher.DECRYPT_MODE);
+    public byte[] Encrypt(byte[] data, String password) throws Exception {
+        return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
-    private byte[] transform(byte[] input, ChainingMode mode, String password, int cipherMode) throws Exception {
-        Cipher cipher = Cipher.getInstance(getName() + "/" + mode.getName() + "/" + mode.getPadding());
+    private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws Exception {
+        Cipher cipher = Cipher.getInstance(getName() + "/" + mode.toString() + "/" + mode.getPadding());
         MessageDigest md5 = MessageDigest.getInstance("SHA-256");
 
         final byte[][] keyAndIV = EVP_BytesToKey(getKeyLength() / Byte.SIZE, cipher.getBlockSize(), md5, password.getBytes(), 1);
@@ -29,10 +37,6 @@ public abstract class CipherAlgorithm {
         }
         return cipher.doFinal(input);
     }
-
-    abstract String getName();
-
-    abstract int getKeyLength();
 
     // source: https://gist.github.com/luosong/5523434
     public static byte[][] EVP_BytesToKey(int key_len, int iv_len, MessageDigest md, byte[] data, int count) {
