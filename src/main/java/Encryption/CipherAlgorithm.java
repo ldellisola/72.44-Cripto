@@ -13,6 +13,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
+import java.util.Base64;
 
 public abstract class CipherAlgorithm {
     private final static int COUNT = 1;
@@ -25,12 +26,12 @@ public abstract class CipherAlgorithm {
 
     public byte[] Decrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        return transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
+        return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
     public byte[] Encrypt(byte[] data, String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
+        return transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
     }
 
     private byte[] transform(byte[] input, ChainingModes mode, String password, int cipherMode) throws NoSuchAlgorithmException, NoSuchPaddingException,
