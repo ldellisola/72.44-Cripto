@@ -4,6 +4,7 @@ import Bmp.BmpFile;
 import org.bouncycastle.util.Arrays;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 public class LSBI implements Algorithm {
 
@@ -37,7 +38,7 @@ public class LSBI implements Algorithm {
             System.arraycopy(BitOperations.ReadLastKBits(data[i], 8), 0, dataInBits, i * 8, 8);
 
         final var benefitMatrix = new int[4][2];
-        for (int x = 0, i = 0, t = 0; x < carrier.ContentInBytes.length || t < 4; x++,i++){
+        for (int x = 0, i = 0, t = 0; x < carrier.ContentInBytes.length && t < 4; x++,i++){
             if (i < dataInBits.length){
                 var beforeWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
                 carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[x] ,0, dataInBits[i]);
@@ -53,7 +54,7 @@ public class LSBI implements Algorithm {
 
         for(int i = 0 ; i < dataInBits.length; i++)
             carrier.ContentInBytes[i] = invInfo(carrier.ContentInBytes[i], benefitMatrix);
-
+        System.out.println(java.util.Arrays.deepToString(benefitMatrix));
         return carrier;
     }
 
@@ -83,11 +84,40 @@ public class LSBI implements Algorithm {
 // Viene la matriz
 //
 // (tamañoEnc|Enc(tamaño|contenido|extension|0))|matriz
-//        int size = carrier.ContentInBytes[];
+//        int size = ByteBuffer.wrap(Arrays.copyOfRange(carrier.ContentInBytes,0,4)).getInt();
+        int size = arrayToInt(Arrays.copyOfRange(carrier.ContentInBytes,0,4));
+        int matrixPosition = searchMatrixPosition(carrier.ContentInBytes,size);
+        var invVector = getInvVector(carrier.ContentInBytes, matrixPosition);
+        System.out.println(java.util.Arrays.toString(invVector));
         for (var _byte : carrier.ContentInBytes) {
             WriteBit(BitOperations.ReadKBit(_byte, 0));
         }
 
         return Stream.toByteArray();
+    }
+
+    private int arrayToInt(byte[] copyOfRange) {
+        int num = 0;
+        for (int i = copyOfRange.length - 1; i >=0 ; i--) {
+            num += copyOfRange[i] * Math.pow(10,copyOfRange.length - 1 - i);
+        }
+        return num;
+    }
+
+    private boolean [] getInvVector(byte[] contentInBytes,int matrixPosition) {
+        var toReturn = new boolean[4];
+        for (int i = 0; i < 4; i++) {
+            toReturn[i] = BitOperations.ReadLastKBits(contentInBytes[matrixPosition+i],1)[0];
+        }
+        return toReturn;
+    }
+
+    private int searchMatrixPosition(byte[] contentInBytes, int size) {
+        boolean flag = false;
+        int i;
+        for (i = size + 4; i < contentInBytes.length && !flag; i++) {
+            flag = contentInBytes[i] == 0;
+        }
+        return i;
     }
 }
