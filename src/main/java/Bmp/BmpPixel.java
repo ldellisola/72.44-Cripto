@@ -20,6 +20,9 @@ public class BmpPixel {
         Blue = data[0];
     }
 
+
+
+
     public byte[] ToByteArray() {
         return new byte[]{Blue, Green, Red};
     }

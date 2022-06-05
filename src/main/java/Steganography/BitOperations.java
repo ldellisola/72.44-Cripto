@@ -25,5 +25,12 @@ public class BitOperations {
         }
     }
 
+    public static int BitsToInt(boolean[] bits) {
+        int value = 0;
+        for (int i = bits.length - 1; i >= 0; i--) {
+            value += bits[i] ? Math.pow(2, i) : 0;
+        }
+        return value;
+    }
 
 }

@@ -1,5 +1,7 @@
 package Bmp;
 
+import Steganography.BitOperations;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,6 +16,7 @@ public class BmpFile {
 
     public final BmpHeader Header;
     public final BmpPixel[] Content;
+    public final byte[] ContentInBytes;
 
     public BmpFile(String filename) throws Exception {
         var file = new File(filename);
@@ -25,6 +28,9 @@ public class BmpFile {
         for (int i = 0; i < Content.length; i++)
             Content[i] = new BmpPixel(fileContent.readNBytes(Header.BytesPerPixel()));
 
+        ContentInBytes = new byte[Content.length * 3];
+        LoadBits();
+
     }
 
     public BmpFile(File file) throws IOException, InvalidBmpException {
@@ -35,6 +41,29 @@ public class BmpFile {
 
         for (int i = 0; i < Content.length; i++)
             Content[i] = new BmpPixel(fileContent.readNBytes(Header.BytesPerPixel()));
+
+        ContentInBytes = new byte[Content.length * 3];
+        LoadBits();
+    }
+
+    private void LoadBits(){
+        int i = 0;
+        for (var pixel: Content) {
+            if (i >= ContentInBytes.length)
+                break;
+
+            ContentInBytes[i++] = pixel.Blue;
+            if (i >= ContentInBytes.length)
+                break;
+
+            ContentInBytes[i++] = pixel.Green;
+            if (i >= ContentInBytes.length)
+                break;
+
+            ContentInBytes[i++] = pixel.Red;
+            if (i >= ContentInBytes.length)
+                break;
+        }
     }
 
 
