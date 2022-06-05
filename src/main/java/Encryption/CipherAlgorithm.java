@@ -2,21 +2,14 @@ package Encryption;
 
 import CommandLineArguments.Enums.ChainingModes;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
-import java.util.Base64;
 
 public abstract class CipherAlgorithm {
     private final static int COUNT = 1;
@@ -28,7 +21,11 @@ public abstract class CipherAlgorithm {
     abstract ChainingModes getChainingMode();
 
     public byte[] Decrypt(byte[] data, String password) throws Exception {
-        return transform(data, getChainingMode(), password, Cipher.DECRYPT_MODE);
+        var stream = new ByteArrayInputStream(data);
+        int size = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
+        var encryptedData = stream.readNBytes(size);
+
+        return transform(encryptedData, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
     public byte[] Encrypt(byte[] data, String password) throws Exception{
