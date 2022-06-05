@@ -5,16 +5,13 @@ import CommandLineArguments.Enums.EncryptionPrimitives;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 
-public class Cipher {
+public class CipherProperties {
     private final String encryptionPrimitive;
     private final int keySize;
     private final String chainingMode;
 
-    public Cipher(EncryptionPrimitives encryptionPrimitive, ChainingModes chainingMode) {
+    public CipherProperties(EncryptionPrimitives encryptionPrimitive, ChainingModes chainingMode) {
         this.encryptionPrimitive = encryptionPrimitive.toString();
         this.chainingMode = chainingMode.toString();
         this.keySize = encryptionPrimitive.KeyLength();

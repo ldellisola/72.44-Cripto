@@ -2,7 +2,7 @@ import Bmp.BmpFile;
 import CommandLineArguments.CommandLineOptions;
 import CommandLineArguments.EmbedArguments;
 import CommandLineArguments.ExtractArguments;
-import Encryption.Cipher;
+import Encryption.CipherProperties;
 import Steganography.Information;
 import Steganography.LSB1;
 import Steganography.LSB4;
@@ -43,7 +43,7 @@ public class Main {
         var rawInformation = Information.Load(args.InputFile).ToByteArray();
 
         if (args.UseEncyption())
-            rawInformation =new Cipher(args.EncryptionPrimitive,args.ChainingMode).Encrypt(rawInformation, args.Password);
+            rawInformation =new CipherProperties(args.EncryptionPrimitive,args.ChainingMode).Encrypt(rawInformation, args.Password);
 
         var content = switch (args.SteganographyAlgorithm) {
             case LSB1 -> new LSB1().EmbedInformation(carrier, rawInformation);
@@ -65,7 +65,8 @@ public class Main {
         };
 
         if (args.UseEncryption())
-            rawInformation = new Cipher(args.EncryptionPrimitive,args.ChainingMode).Decrypt(rawInformation, args.Password);
+            rawInformation = new CipherProperties(args.EncryptionPrimitive,args.ChainingMode)
+                                    .Decrypt(rawInformation, args.Password);
 
         var information = Information.Load(rawInformation);
 
