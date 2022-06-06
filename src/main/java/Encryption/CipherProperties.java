@@ -2,6 +2,7 @@ package Encryption;
 
 import CommandLineArguments.Enums.ChainingModes;
 import CommandLineArguments.Enums.EncryptionPrimitives;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -10,7 +11,7 @@ public class CipherProperties extends CipherAlgorithm {
     private final int keySize;
     private final String chainingMode;
 
-    public CipherProperties(EncryptionPrimitives encryptionPrimitive, ChainingModes chainingMode) {
+    public CipherProperties(@NotNull EncryptionPrimitives encryptionPrimitive, @NotNull ChainingModes chainingMode) {
         this.encryptionPrimitive = encryptionPrimitive.toString();
         this.chainingMode = chainingMode.toString();
         this.keySize = encryptionPrimitive.KeyLength();

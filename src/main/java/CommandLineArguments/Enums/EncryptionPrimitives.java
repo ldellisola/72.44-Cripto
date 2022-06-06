@@ -49,6 +49,4 @@ public enum EncryptionPrimitives {
     public int KeyLength() {
         return 0;
     }
-
-
 }

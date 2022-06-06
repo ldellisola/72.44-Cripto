@@ -29,8 +29,8 @@ public abstract class CipherAlgorithm {
         return transform(encryptedData, getChainingMode(), password, Cipher.DECRYPT_MODE);
     }
 
-    public byte[] Encrypt(byte[] data, String password) throws Exception{
-        var encryptedData =  transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
+    public byte[] Encrypt(byte[] data, String password) throws Exception {
+        var encryptedData = transform(data, getChainingMode(), password, Cipher.ENCRYPT_MODE);
 
         var stream = new ByteArrayOutputStream();
 
@@ -41,7 +41,7 @@ public abstract class CipherAlgorithm {
     }
 
     private byte[] transform(byte[] input, @NotNull ChainingModes mode, @NotNull String password, int cipherMode) throws Exception {
-        Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode.toString() + "/" + mode.getPadding());
+        Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode + "/" + mode.getPadding());
         // Para la generación de clave a partir de una password, asumir que la función de hash usada es sha256, y que no se usa SALT.
         MessageDigest md5 = MessageDigest.getInstance("SHA-256");
 

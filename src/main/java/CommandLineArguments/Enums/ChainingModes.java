@@ -1,7 +1,6 @@
 package CommandLineArguments.Enums;
 
 public enum ChainingModes {
-
     CBC {
         @Override
         public String toString() {
@@ -11,11 +10,6 @@ public enum ChainingModes {
         @Override
         public String getPadding() {
             return "PKCS5Padding";
-        }
-
-        @Override
-        public boolean usesIV() {
-            return true;
         }
     },
     ECB {
@@ -39,31 +33,11 @@ public enum ChainingModes {
         public String toString() {
             return "CFB";
         }
-
-        @Override
-        public String getPadding() {
-            return "NoPadding";
-        }
-
-        @Override
-        public boolean usesIV() {
-            return true;
-        }
     },
     OFB {
         @Override
         public String toString() {
             return "OFB";
-        }
-
-        @Override
-        public String getPadding() {
-            return "NoPadding";
-        }
-
-        @Override
-        public boolean usesIV() {
-            return true;
         }
     };
 
