@@ -5,8 +5,10 @@ import org.bouncycastle.util.Arrays;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 public class LSBI implements Algorithm {
+
 
     public static void checkChanges(boolean[] b1, boolean[] b2, int[][] benefitMatrix){
         if(Arrays.areEqual(b1,b2))
@@ -19,14 +21,11 @@ public class LSBI implements Algorithm {
         var last_bits = BitOperations.ReadLastKBits(pixel, 2);
         int position_pattern = BitOperations.BitsToInt(last_bits);
         if(benefitMatrix[position_pattern][0] <= benefitMatrix[position_pattern][1]){
-            pixel = BitOperations.WriteBit(pixel,0, !last_bits[1]);
+            pixel = BitOperations.WriteBit(pixel,0, !last_bits[0]);
         }
         return pixel;
     }
 
-    private enum Pixel{
-        Red, Green, Blue
-    }
 
     @Override
     public BmpFile EmbedInformation(BmpFile carrier, byte[] data) throws Exception {
@@ -38,23 +37,36 @@ public class LSBI implements Algorithm {
             System.arraycopy(BitOperations.ReadLastKBits(data[i], 8), 0, dataInBits, i * 8, 8);
 
         final var benefitMatrix = new int[4][2];
-        for (int x = 0, i = 0, t = 0; x < carrier.ContentInBytes.length && t < 4; x++,i++){
+        int how_many = 0;
+        for (int x = 4, i = 0, t = 0; x < carrier.ContentInBytes.length && t < 4; x++,i++){
             if (i < dataInBits.length){
                 var beforeWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
                 carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[x] ,0, dataInBits[i]);
+                how_many++;
                 var afterWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
                 checkChanges(beforeWrite,afterWrite,benefitMatrix);
             }
             else {
                 var isInverted = benefitMatrix[t][0] <= benefitMatrix[t][1];
-                carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[t], 0, isInverted);
+                System.out.println(isInverted);
+                carrier.ContentInBytes[t] = BitOperations.WriteBit(carrier.ContentInBytes[t], 0, isInverted);
                 t++;
             }
         }
 
         for(int i = 0 ; i < dataInBits.length; i++)
-            carrier.ContentInBytes[i] = invInfo(carrier.ContentInBytes[i], benefitMatrix);
+            carrier.ContentInBytes[i+4] = invInfo(carrier.ContentInBytes[i+4], benefitMatrix);
         System.out.println(java.util.Arrays.deepToString(benefitMatrix));
+        System.out.println(carrier.ContentInBytes.length);
+        var total = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                total += benefitMatrix[i][j];
+            }
+        }
+        System.out.println(total);
+        System.out.println(dataInBits.length == total);
+        System.out.println(how_many);
         return carrier;
     }
 
@@ -77,24 +89,37 @@ public class LSBI implements Algorithm {
 
     @Override
     public byte[] ExtractInformation(BmpFile carrier) {
-// (tamaño|contenido|extension|0)|matriz
-// 4 bytes del tamaño
-// sacamos n bytes de contenido (definido por el tamaño)
-// sacamos la extension hasta tener un byte en 0
-// Viene la matriz
-//
-// (tamañoEnc|Enc(tamaño|contenido|extension|0))|matriz
-//        int size = ByteBuffer.wrap(Arrays.copyOfRange(carrier.ContentInBytes,0,4)).getInt();
-        int size = arrayToInt(Arrays.copyOfRange(carrier.ContentInBytes,0,4));
-        int matrixPosition = searchMatrixPosition(carrier.ContentInBytes,size);
-        var invVector = getInvVector(carrier.ContentInBytes, matrixPosition);
-        System.out.println(java.util.Arrays.toString(invVector));
-        for (var _byte : carrier.ContentInBytes) {
-            WriteBit(BitOperations.ReadKBit(_byte, 0));
+// matriz|(tamaño|contenido|extension|0)
+// |matriz|(tamañoEnc|Enc(tamaño|contenido|extension|0))
+// lo primero es sacar la matriz para poder extraer el paquete entero. Da lo mismo si esta encriptado o no lo del final
+
+        var aux = new boolean[4];
+        for (int i = 0; i < 4; i++) {
+//            aux[i] = BitOperations.ReadKBit(carrier.ContentInBytes[carrier.ContentInBytes.length - 1 - i],0);
+            aux[i] = BitOperations.ReadKBit(carrier.ContentInBytes[i],0);
         }
+//        int size = arrayToInt(Arrays.copyOfRange(carrier.ContentInBytes,0,4));
+        for (int i = 4; i < carrier.ContentInBytes.length; i++) {
+            var _byte = carrier.ContentInBytes[i];
+            var last_two_bits = BitOperations.ReadLastKBits(_byte, 2);
+            boolean should_inv = aux[BitOperations.BitsToInt(last_two_bits)];
+            var value = BitOperations.ReadKBit(_byte, 0);
+            if(should_inv)
+                value = !value;
+            WriteBit(value);
+        }
+//        for (var _byte : carrier.ContentInBytes) {
+//            var last_two_bits = BitOperations.ReadLastKBits(_byte, 2);
+//            boolean should_inv = aux[BitOperations.BitsToInt(last_two_bits)];
+//            var value = BitOperations.ReadKBit(_byte, 0);
+//            if(should_inv)
+//                value = !value;
+//            WriteBit(value);
+//        }
 
         return Stream.toByteArray();
     }
+
 
     private int arrayToInt(byte[] copyOfRange) {
         int num = 0;
@@ -105,11 +130,7 @@ public class LSBI implements Algorithm {
     }
 
     private boolean [] getInvVector(byte[] contentInBytes,int matrixPosition) {
-        var toReturn = new boolean[4];
-        for (int i = 0; i < 4; i++) {
-            toReturn[i] = BitOperations.ReadLastKBits(contentInBytes[matrixPosition+i],1)[0];
-        }
-        return toReturn;
+        return BitOperations.ReadLastKBits(contentInBytes[matrixPosition],4);
     }
 
     private int searchMatrixPosition(byte[] contentInBytes, int size) {
