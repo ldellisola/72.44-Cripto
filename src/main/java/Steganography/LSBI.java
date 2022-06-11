@@ -101,7 +101,10 @@ public class LSBI implements Algorithm {
 //        int size = arrayToInt(Arrays.copyOfRange(carrier.ContentInBytes,0,4));
         for (int i = 4; i < carrier.ContentInBytes.length; i++) {
             var _byte = carrier.ContentInBytes[i];
-            var last_two_bits = BitOperations.ReadLastKBits(_byte, 2);
+            var last_two_bits = new boolean[2];
+            last_two_bits[0] = BitOperations.ReadKBit(_byte,0);
+            last_two_bits[1] = BitOperations.ReadKBit(_byte,1);
+//            var last_two_bits = BitOperations.ReadLastKBits(_byte,2);
             boolean should_inv = aux[BitOperations.BitsToInt(last_two_bits)];
             var value = BitOperations.ReadKBit(_byte, 0);
             if(should_inv)
