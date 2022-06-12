@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 
 public abstract class CipherAlgorithm {
     private final static int COUNT = 1;
+    private final static int BYTE_SIZE = 4;
 
     abstract String getPrimitive();
 
@@ -23,7 +24,7 @@ public abstract class CipherAlgorithm {
 
     public byte[] Decrypt(byte[] data, String password) throws Exception {
         var stream = new ByteArrayInputStream(data);
-        int size = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
+        int size = ByteBuffer.wrap(stream.readNBytes(BYTE_SIZE)).getInt();
         var encryptedData = stream.readNBytes(size);
 
         return transform(encryptedData, getChainingMode(), password, Cipher.DECRYPT_MODE);
@@ -34,7 +35,7 @@ public abstract class CipherAlgorithm {
 
         var stream = new ByteArrayOutputStream();
 
-        stream.write(ByteBuffer.allocate(4).putInt(encryptedData.length).array());
+        stream.write(ByteBuffer.allocate(BYTE_SIZE).putInt(encryptedData.length).array());
         stream.write(encryptedData);
 
         return stream.toByteArray();
@@ -43,9 +44,9 @@ public abstract class CipherAlgorithm {
     private byte[] transform(byte[] input, @NotNull ChainingModes mode, @NotNull String password, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance(getPrimitive() + "/" + mode + "/" + mode.getPadding());
         // Para la generación de clave a partir de una password, asumir que la función de hash usada es sha256, y que no se usa SALT.
-        MessageDigest md5 = MessageDigest.getInstance("SHA-256");
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
 
-        final byte[][] keyAndIV = EVP_BytesToKey(getKeyLength() / Byte.SIZE, cipher.getBlockSize(), md5, (password).getBytes(StandardCharsets.UTF_8), COUNT);
+        final byte[][] keyAndIV = EVP_BytesToKey(getKeyLength() / Byte.SIZE, cipher.getBlockSize(), sha256, (password).getBytes(StandardCharsets.UTF_8), COUNT);
         SecretKeySpec key = new SecretKeySpec(keyAndIV[0], getPrimitive());
 
         if (mode.usesIV()) {
