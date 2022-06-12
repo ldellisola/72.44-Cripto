@@ -28,10 +28,10 @@ public enum ChainingModes {
             return false;
         }
     },
-    CFB {
+    CFB8 {
         @Override
         public String toString() {
-            return "CFB";
+            return "CFB8";
         }
     },
     OFB {
