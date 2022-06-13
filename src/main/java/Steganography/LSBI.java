@@ -4,8 +4,8 @@ import Bmp.BmpFile;
 import org.bouncycastle.util.Arrays;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class LSBI implements Algorithm {
 
@@ -18,7 +18,10 @@ public class LSBI implements Algorithm {
     }
 
     public static byte invInfo(byte pixel, int[][] benefitMatrix){
-        var last_bits = BitOperations.ReadLastKBits(pixel, 2);
+//        var last_bits = BitOperations.ReadLastKBits(pixel, 2);
+        var last_bits = new boolean[4];
+        last_bits[0] = BitOperations.ReadKBit(pixel,0);
+        last_bits[1] = BitOperations.ReadKBit(pixel,1);
         int position_pattern = BitOperations.BitsToInt(last_bits);
         if(benefitMatrix[position_pattern][0] <= benefitMatrix[position_pattern][1]){
             pixel = BitOperations.WriteBit(pixel,0, !last_bits[0]);
@@ -40,10 +43,16 @@ public class LSBI implements Algorithm {
         int how_many = 0;
         for (int x = 4, i = 0, t = 0; x < carrier.ContentInBytes.length && t < 4; x++,i++){
             if (i < dataInBits.length){
-                var beforeWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
+//                var beforeWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
+                var beforeWrite = new boolean[2];
+                beforeWrite[0] = BitOperations.ReadKBit(carrier.ContentInBytes[x], 1);
+                beforeWrite[1] = BitOperations.ReadKBit(carrier.ContentInBytes[x], 2);
                 carrier.ContentInBytes[x] = BitOperations.WriteBit(carrier.ContentInBytes[x] ,0, dataInBits[i]);
+                var afterWrite = new boolean[2];
+                afterWrite[0] = BitOperations.ReadKBit(carrier.ContentInBytes[x], 1);
+                afterWrite[1] = BitOperations.ReadKBit(carrier.ContentInBytes[x], 2);
                 how_many++;
-                var afterWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
+//                var afterWrite = BitOperations.ReadLastKBits(carrier.ContentInBytes[x],2);
                 checkChanges(beforeWrite,afterWrite,benefitMatrix);
             }
             else {
@@ -97,13 +106,14 @@ public class LSBI implements Algorithm {
         for (int i = 0; i < 4; i++) {
 //            aux[i] = BitOperations.ReadKBit(carrier.ContentInBytes[carrier.ContentInBytes.length - 1 - i],0);
             aux[i] = BitOperations.ReadKBit(carrier.ContentInBytes[i],0);
+            System.out.println(aux[i]);
         }
 //        int size = arrayToInt(Arrays.copyOfRange(carrier.ContentInBytes,0,4));
         for (int i = 4; i < carrier.ContentInBytes.length; i++) {
             var _byte = carrier.ContentInBytes[i];
             var last_two_bits = new boolean[2];
-            last_two_bits[0] = BitOperations.ReadKBit(_byte,0);
-            last_two_bits[1] = BitOperations.ReadKBit(_byte,1);
+            last_two_bits[0] = BitOperations.ReadKBit(_byte,1);
+            last_two_bits[1] = BitOperations.ReadKBit(_byte,2);
 //            var last_two_bits = BitOperations.ReadLastKBits(_byte,2);
             boolean should_inv = aux[BitOperations.BitsToInt(last_two_bits)];
             var value = BitOperations.ReadKBit(_byte, 0);
