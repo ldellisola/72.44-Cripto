@@ -34,9 +34,9 @@ Donde los `<parametros>` dependen de lo que se desea hacer y se especifican a co
 | `-in <file>`         | Archivo que se va a ocultar.                                                                  |
 | `-p <bitmap_file>`   | Archivo bmp que será el portador.                                                             |
 | `-out <bitmap_file>` | Archivo bmp de salida, es decir, el archivo bitmapfile con la información de file incrustada. |
-| `-s <LSB1            | LSB4                                                                                          | LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.  |
-| `-a <aes128          | aes192                                                                                        | aes256 | des>` | Algoritmo de encriptación: AES de 128, 192 o 256 bits y DES de 64. |
-| `-m <ecb             | cfb8                                                                                          | ofb | cbc>` | Modo de encriptación: CBC (IV y padding), ECB (padding), CFB8 (IV) y OFB (IV). |
+| `-s <LSB1 | LSB4 | LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.  |
+| `-a <aes128 | aes192 | aes256 | des>` | Algoritmo de encriptación: AES de 128, 192 o 256 bits y DES de 64. |
+| `-m <ecb | cfb8 | ofb | cbc>` | Modo de encriptación: CBC (IV y padding), ECB (padding), CFB8 (IV) y OFB (IV). |
 | `-pass <password>`   | Indica la password encripción.                                                                |
 
 ### Extracción
@@ -46,9 +46,9 @@ Donde los `<parametros>` dependen de lo que se desea hacer y se especifican a co
 | `-p <bitmap_file>`   | Archivo bmp que es el portador.                                                               |
 | `-out <file>`        | Archivo de salida obtenido.                                                                   |
 | `-out <bitmap_file>` | Archivo bmp de salida, es decir, el archivo bitmapfile con la información de file incrustada. |
-| `-s <LSB1            | LSB4                                                                                          | LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.  |
-| `-a <aes128          | aes192                                                                                        | aes256 | des>` | Algoritmo de encriptación: AES de 128, 192 o 256 bits y DES de 64. |
-| `-m <ecb             | cfb8                                                                                          | ofb | cbc>` | Modo de encriptación: CBC (IV y padding), ECB (padding), CFB8 (IV) y OFB (IV). |
+| `-s <LSB1 | LSB4 | LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.  |
+| `-a <aes128 | aes192 | aes256 | des>` | Algoritmo de encriptación: AES de 128, 192 o 256 bits y DES de 64. |
+| `-m <ecb | cfb8 | ofb | cbc>` | Modo de encriptación: CBC (IV y padding), ECB (padding), CFB8 (IV) y OFB (IV). |
 | `-pass <password>`   | Indica la password encripción.                                                                |
 
 
