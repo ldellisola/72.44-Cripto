@@ -24,7 +24,7 @@ Trabajo Práctico Especial para la materia 72.44 - Criptografía y Seguridad - P
 
 # Instalación
 
-Como pre-requisito se requiere Java 17 y Maven instalados.
+Como pre-requisito se requiere [Java 17](https://www.oracle.com/java/technologies/downloads/) y [Apache Maven](https://maven.apache.org/download.cgi) instalados.
 
 ## Compilación
 
@@ -37,7 +37,7 @@ mvn clean install
 Se tiene un script de bash para la ejecución del repositorio.
 En caso de ser necesario dar permisos de ejecución al archivo.
 ```sh
-sudo chmod 777 ./stegobmp.sh
+chmod 777 ./stegobmp.sh
 ```
 Luego, correr lo siguiente
 ```sh
