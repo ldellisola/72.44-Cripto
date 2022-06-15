@@ -10,7 +10,7 @@ Trabajo Práctico Especial para la materia 72.44 - Criptografía y Seguridad - P
       1. [Parámetros](#parámetros)
          1. [Ocultamiento](#ocultamiento)
          2. [Extracción](#extracción)
-         3. [Encriptación](#encriptación)
+         3. [Encripción](#encripción)
    3. [Ejemplos de uso](#ejemplos-de-uso)
       1. [Ejemplo 1](#ejemplo-1)
       2. [Ejemplo 2](#ejemplo-2)
@@ -66,10 +66,9 @@ Son case sensitive, se deben respetar las mayúsculas.
 | `-extract`           | Indica que se va a extraer información.                                                       |
 | `-p <bitmap_file>`   | Archivo bmp que es el portador.                                                               |
 | `-out <file>`        | Archivo de salida obtenido.                                                                   |
-| `-out <bitmap_file>` | Archivo bmp de salida, es decir, el archivo bitmapfile con la información de file incrustada. |
-| `-s <LSB1 \| LSB4 \| LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.  |
+| `-s <LSB1 \| LSB4 \| LSBI>` | Algoritmo de esteganografiado: LSB de 1 bit, LSB de 4 bits, LSB Improved.              |
 
-#### Encriptación
+#### Encripción
 
 Se pueden usar opcionalmente en tanto el ocultamiento y en la extracción si se lo requiere.
 
