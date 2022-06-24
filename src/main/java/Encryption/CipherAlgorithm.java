@@ -70,7 +70,7 @@ public abstract class CipherAlgorithm {
         byte[] md_buf = null;
         int nkey = key_len;
         int niv = iv_len;
-        int i = 0;
+        int i;
         if (data == null) {
             return both;
         }

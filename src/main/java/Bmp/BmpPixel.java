@@ -1,9 +1,9 @@
 package Bmp;
 
 public class BmpPixel {
-    public byte Red;
-    public byte Green;
-    public byte Blue;
+    public final byte Red;
+    public final byte Green;
+    public final byte Blue;
 
     public BmpPixel(byte red, byte green, byte blue) {
         Red = red;

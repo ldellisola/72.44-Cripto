@@ -7,20 +7,20 @@ import java.nio.charset.StandardCharsets;
 public class BmpHeader {
     public enum BitmapId {BM, BA, CI, CP, IC, PT}
 
-    public BitmapId Id;
-    public int FileSize;
-    public int BitmapDataOffset;
-    public int HeaderSize;
-    public int Width;
-    public int Height;
-    public short ColorPlanes;
-    public short BitsPerPixel;
-    public int CompressionMethod;
-    public int RawImageSize;
-    public int HorizontalResolution;
-    public int VerticalResolution;
-    public int ColorPalette;
-    public int ImportantColors;
+    public final BitmapId Id;
+    public final int FileSize;
+    public final int BitmapDataOffset;
+    public final int HeaderSize;
+    public final int Width;
+    public final int Height;
+    public final short ColorPlanes;
+    public final short BitsPerPixel;
+    public final int CompressionMethod;
+    public final int RawImageSize;
+    public final int HorizontalResolution;
+    public final int VerticalResolution;
+    public final int ColorPalette;
+    public final int ImportantColors;
 
     public BmpHeader(byte[] content) throws InvalidBmpException {
 
