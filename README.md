@@ -1,4 +1,4 @@
-# stenography-crypto
+# Stenography
 
 Trabajo Práctico Especial para la materia 72.44 - Criptografía y Seguridad - Primer Cuatrimestre 2022.
 
